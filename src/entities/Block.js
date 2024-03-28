@@ -11,10 +11,10 @@ export class Block extends Drawable {
         super(props);
         this.type = props.type;
         this.size = props.size;
-        this.border = props.border ? props.border : 4;
+        this.border = props.border ? props.border : 8;
         this.padding = props.padding ? props.padding : 4;
         this.color = this.type === "x" ? "#434343" : possibleColors[Math.round(Math.random() * (possibleColors.length - 1))];
-        this.borderColor = averageHexColor('#8c8c8c', this.color);
+        this.borderColor = averageHexColor('#242424', this.color);
         this.field = props.field;
 
         if (props.collidable && this.type !== "_") {
@@ -23,14 +23,14 @@ export class Block extends Drawable {
     }
 
     draw() {
-        if (this.destroyed || this.type === "_") {
+        if (this.destroyed || this.type === "_" || this.type === "!") {
             return;
         }
         this.draw2D();
     }
 
     preDraw() {
-        if (this.destroyed || this.type === "_") {
+        if (this.destroyed || this.type === "_" || this.type === "!") {
             return;
         }
         this.draw3D();
@@ -41,7 +41,7 @@ export class Block extends Drawable {
         const ctx = this.getContext();
         const pos = this.getAdaptivePosition();
         const size = this.getAdaptiveSize();
-        const borderWidth = 64;
+        const borderWidth = 3000;
 
         let offsetPercent = (this.getPosition().x - document.field.getSize().width / 2) / (document.field.getSize().width / 2);
 
@@ -49,28 +49,25 @@ export class Block extends Drawable {
         // Draw top face
         ctx.fillStyle = averageHexColor(this.color, '#262626'); // Border color blended with background color
         ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y - borderWidth ); // A
-        ctx.lineTo(pos.x + size.width, pos.y - borderWidth); // B
-        ctx.lineTo(pos.x + size.width + borderWidth * offsetPercent, pos.y); // C
-        ctx.lineTo(pos.x + borderWidth * offsetPercent, pos.y); // D
+        ctx.moveTo(pos.x - borderWidth * offsetPercent + this.padding  , pos.y - borderWidth + this.padding); // A
+        ctx.lineTo(pos.x + size.width - borderWidth * offsetPercent - 2 * this.padding , pos.y - borderWidth + this.padding); // B
+        ctx.lineTo(pos.x + size.width - 2 * this.padding, pos.y + this.padding); // C
+        ctx.lineTo(pos.x + this.padding, pos.y + this.padding); // D
         ctx.closePath();
         ctx.fill();
 
-        // Draw side face
-        ctx.fillStyle = averageHexColor(this.color, '#434343'); // Border color blended with darker background color
+
         ctx.beginPath();
         if (offsetPercent <= 0) {
-            // Рисуем справа от блока
-            ctx.moveTo(pos.x + size.width, pos.y);
-            ctx.lineTo(pos.x + size.width + borderWidth * offsetPercent, pos.y + borderWidth);
-            ctx.lineTo(pos.x + size.width + borderWidth * offsetPercent, pos.y ); // C
-            ctx.lineTo(pos.x + size.width, pos.y - borderWidth); // B
+            ctx.moveTo(pos.x + size.width - borderWidth * offsetPercent - 2 * this.padding , pos.y + size.height - borderWidth); // A
+            ctx.lineTo(pos.x + size.width - borderWidth * offsetPercent - 2 * this.padding , pos.y - borderWidth + this.padding); // B
+            ctx.lineTo(pos.x + size.width - 2 * this.padding, pos.y + this.padding  ); // C
+            ctx.lineTo(pos.x + size.width - 2 * this.padding, pos.y + size.height); // D
         } else {
-            // Рисуем слева от блока
-            ctx.moveTo(pos.x, pos.y);
-            ctx.lineTo(pos.x + borderWidth * offsetPercent, pos.y + borderWidth);
-            ctx.lineTo(pos.x + borderWidth * offsetPercent, pos.y);
-            ctx.lineTo(pos.x, pos.y - borderWidth);
+            ctx.moveTo(pos.x - borderWidth * offsetPercent  + this.padding , pos.y - borderWidth + this.padding); // A
+            ctx.lineTo(pos.x - borderWidth * offsetPercent  + this.padding , pos.y  + size.height - borderWidth ); // B
+            ctx.lineTo(pos.x + this.padding, pos.y + size.height); // C
+            ctx.lineTo(pos.x + this.padding, pos.y + this.padding); // D
         }
         ctx.closePath();
         ctx.fill();

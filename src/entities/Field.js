@@ -85,17 +85,38 @@ export class Field {
         };
         const blockExample = new Block({size: size});
         const blockSize = blockExample.getSize();
-        for (let y = 0; y < pattern.length; y++) {
-            const row = pattern[y];
-            for (let x = 0; x < row.length; x++) {
-                const position = {
+        for (let x = 0; x < this.getSize().rows / 2; x++) {
+            for (let y = 0; y < pattern.length; y++) {
+                const rowL = pattern[pattern.length - y - 1];
+                const positionL = {
                     x: blockSize.width * (x - this.size.rows / 2) + this.getSize().width / 2,
-                    y: blockSize.height * y
+                    y: blockSize.height * (pattern.length - y - 1)
                 };
-                const block = new Block({collidable: true, size: size, field: this, position: position, type: row[x]});
-                this.addElement(block);
+                const blockL = new Block({
+                    collidable: true,
+                    size: size,
+                    field: this,
+                    position: positionL,
+                    type: rowL[x]
+                });
+                this.addElement(blockL);
+                const rowR = pattern[pattern.length - y - 1];
+                const positionR = {
+                    x: blockSize.width * ((this.getSize().rows - x - 1) - this.size.rows / 2) + this.getSize().width / 2,
+                    y: blockSize.height * (pattern.length - y - 1)
+                };
+                const blockR = new Block({
+                    collidable: true,
+                    size: size,
+                    field: this,
+                    position: positionR,
+                    type: rowR[this.getSize().rows - x - 1]
+                });
+                this.addElement(blockR);
             }
+
         }
+
         this.drawElements();
     }
 
