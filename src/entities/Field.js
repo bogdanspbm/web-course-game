@@ -171,9 +171,19 @@ export class Field {
         }));
     }
 
-    stopGame(){
-        this.deleteAllElements();
-        this.clearField();
+    stopGame() {
+
+        if (!this.ended) {
+            this.deleteAllElements();
+            this.clearField();
+            const root = document.getElementById("root");
+            document.getElementById("main-canvas").style.display = "none";
+            const header = document.createElement("h1");
+            header.innerText = "Game Over";
+            root.appendChild(header);
+        }
+
+        this.ended = true;
     }
 
 }
