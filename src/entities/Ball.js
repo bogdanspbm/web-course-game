@@ -38,6 +38,10 @@ export class Ball extends Drawable {
             }
         }
 
+        if(this.position.y > document.field.getSize().height / 2 + 64){
+            document.field.stopGame();
+        }
+
         this.position = this.getNextPosition();
     }
 

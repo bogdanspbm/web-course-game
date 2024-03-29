@@ -171,4 +171,9 @@ export class Field {
         }));
     }
 
+    stopGame(){
+        this.deleteAllElements();
+        this.clearField();
+    }
+
 }

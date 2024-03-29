@@ -51,8 +51,8 @@ export class Block extends Drawable {
         ctx.beginPath();
         ctx.moveTo(pos.x - borderWidth * offsetPercent + this.padding  , pos.y - borderWidth + this.padding); // A
         ctx.lineTo(pos.x + size.width - borderWidth * offsetPercent - 2 * this.padding , pos.y - borderWidth + this.padding); // B
-        ctx.lineTo(pos.x + size.width - 2 * this.padding, pos.y + this.padding); // C
-        ctx.lineTo(pos.x + this.padding, pos.y + this.padding); // D
+        ctx.lineTo(pos.x + size.width - 2 * this.padding + 4, pos.y + this.padding + 1); // C
+        ctx.lineTo(pos.x + this.padding - 1, pos.y + this.padding + 1); // D
         ctx.closePath();
         ctx.fill();
 
@@ -62,11 +62,11 @@ export class Block extends Drawable {
             ctx.moveTo(pos.x + size.width - borderWidth * offsetPercent - 2 * this.padding , pos.y + size.height - borderWidth); // A
             ctx.lineTo(pos.x + size.width - borderWidth * offsetPercent - 2 * this.padding , pos.y - borderWidth + this.padding); // B
             ctx.lineTo(pos.x + size.width - 2 * this.padding, pos.y + this.padding  ); // C
-            ctx.lineTo(pos.x + size.width - 2 * this.padding, pos.y + size.height); // D
+            ctx.lineTo(pos.x + size.width - 2 * this.padding - 4 * Math.sign(offsetPercent), pos.y + size.height - 4); // D
         } else {
             ctx.moveTo(pos.x - borderWidth * offsetPercent  + this.padding , pos.y - borderWidth + this.padding); // A
             ctx.lineTo(pos.x - borderWidth * offsetPercent  + this.padding , pos.y  + size.height - borderWidth ); // B
-            ctx.lineTo(pos.x + this.padding, pos.y + size.height); // C
+            ctx.lineTo(pos.x + this.padding, pos.y + size.height - 4); // C
             ctx.lineTo(pos.x + this.padding, pos.y + this.padding); // D
         }
         ctx.closePath();
@@ -120,12 +120,14 @@ export class Block extends Drawable {
                 this.destroyed = true;
             }
 
-            if (adx > ady) {
+            if (adx < ady) {
                 // Ball collided with either left or right side of the block
-                return {x: item.direction.x, y: -item.direction.y}; // Reverse the x-direction
-            } else {
+                return {x: -item.direction.x, y: item.direction.y}; // Reverse the x-direction
+            } else if (adx > ady) {
                 // Ball collided with either top or bottom side of the block
-                return {x: -item.direction.x, y: item.direction.y}; // Reverse the y-direction
+                return {x: item.direction.x, y: -item.direction.y}; // Reverse the y-direction
+            } else {
+                return {x: -item.direction.x, y: -item.direction.y};
             }
         }
 
